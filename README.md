@@ -1,5 +1,5 @@
 # ES6-Introduction
-This repository contains slides and code samples from an introduction to ES6 (aka ECMAScript 2015) presented at the Ithaca Web People meeting on November 1, 2016.
+This repository contains slides and code samples from an introduction to ES6 (aka ECMAScript 2015) I presented at the Ithaca Web People meeting on November 1, 2016.
 
 To view the slides, open the file `introduction-to-ES6.html` in your favorite web browser.
 
