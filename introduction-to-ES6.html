@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Title</title>
+    <meta charset="utf-8">
+    <style>
+      ul, p {
+        font-size: 2em;
+      }
+      li {
+        margin: .3em 0;
+      }
+      .remark-slide-content {
+        background-color: #406040; /* #404050; */
+        color: white;
+      }
+      .remark-code-line {
+        font-size: 2em;
+      }
+    </style>
+  </head>
+  <body>
+    <textarea id="source">
+
+class: center, middle
+
+# Introduction to ES6
+Harold Mills, November 2016
+
+---
+
+# What is ES6?
+
+* ES6 = 6th Edition of ECMAScript.
+* ECMAScript is standardized JavaScript.
+* ES6 = ECMAScript 2015.
+* ECMAScript will now be updated annually.
+
+---
+
+# Introduction
+
+* *Many* new features in ES6.
+* I will cover only some.
+* I will not cover those exhaustively.
+
+---
+
+# `const` and `let`
+* `const` for immutable variables.
+* `let` for mutable variables.
+* `var` not really needed for new code.
+```JavaScript
+const pi = 3.1415927;
+let i = 0;
+```
+---
+# `const` and `let` block-scoped
+* `const` and `let` are *block-scoped*, while `var` is *function-scoped*.
+* Can't just substitute `let` for `var`.
+
+```JavaScript
+for (var i = 0; i < n; i++) {...}
+console.log(i);   // ok
+```
+```JavaScript
+for (let i = 0; i < n; i++) {...}
+console.log(i);   // exception
+```
+
+---
+
+# `let` vs. `var` at top level
+`var` creates a global object property:
+```JavaScript
+var i = 0;
+console.log(this.i); // 0
+```
+`let` does not:
+```JavaScript
+let i = 0;
+console.log(this.i); // undefined
+```
+
+---
+
+# `const` and immutability
+`const` makes a *variable* immutable, but not its *value*:
+```JavaScript
+const a = [];
+a.push(0);    // ok
+a = [0];      // exception
+```
+```JavaScript
+const o = {};
+o.x = 5;      // ok
+o = {x: 5};   // exception
+```
+
+---
+
+# Arrow functions
+```JavaScript
+(p1, ..., pn) => { ... }
+```
+is similar to the function expression:
+```JavaScript
+function (p1, ..., pn) { ... }
+```
+but it is shorter and doesn't bind its own `this`.
+
+---
+
+# Concise arrow function body
+```JavaScript
+(a, b) => { return a + b; }
+```
+can be abbreviated to:
+```JavaScript
+(a, b) => a + b
+```
+
+---
+
+# Single-param arrow function
+```JavaScript
+(x) => x * x
+```
+can be abbreviated to:
+```JavaScript
+x => x * x
+```
+
+---
+
+# Returning an object literal
+```JavaScript
+x => ({ x: x })
+```
+Without the parentheses the ES parser will try to parse the object literal as
+a block statement.
+
+---
+
+# `for`...`of`
+Iterates over elements of an *iterable object*.
+```JavaScript
+const a = [1, 2, 3];
+for (const e of a) console.log(e);
+```
+is similar to:
+```JavaScript
+const a = [1, 2, 3];
+a.forEach(e => console.log(e));
+```
+but you can `break` from `for`...`of`.
+
+---
+
+# Puzzle
+What does the following output?
+```JavaScript
+const funcs = [];
+for (var i = 0; i < 2; i++)
+  funcs[i] = () => i;
+for (const f of funcs)
+  console.log(f());
+```
+
+---
+
+# Puzzle
+What does the following output?
+```JavaScript
+const funcs = [];
+for (var i = 0; i < 2; i++)
+  funcs[i] = () => i;
+for (const f of funcs)
+  console.log(f());
+```
+Hint: What is the scope of `i`?
+
+---
+
+# Puzzle
+What does the following output?
+```JavaScript
+const funcs = [];
+for (var i = 0; i < 2; i++)
+  funcs[i] = () => i;
+for (const f of funcs)
+  console.log(f());
+```
+```JavaScript
+2
+2
+```
+
+---
+
+# Puzzle
+The fix is to use `let` instead of `var`:
+```JavaScript
+const funcs = [];
+for (let i = 0; i < 2; i++)
+  funcs[i] = () => i;
+for (const f of funcs)
+  console.log(f());
+```
+```JavaScript
+0
+1
+```
+
+---
+
+# Destructuring
+
+Assigns parts of a composite object to individual variables.
+
+```JavaScript
+const a = [0, 1];
+const [zero, one] = a;
+```
+```JavaScript
+const o = {zero: 0, one: 1};
+const {zero, one} = o;
+```
+
+---
+
+# Selective destructuring
+
+of an array:
+```JavaScript
+const [, one, two] = [0, 1, 2];
+console.log(one, two);   // 1 2
+```
+of an object:
+```JavaScript
+const {one, two} = {zero: 0, one: 1, two: 2};
+console.log(one, two);   // 1 2
+```
+
+---
+
+# Object destructuring with name changes
+
+```JavaScript
+const {one: bobo, two} = {one: 1, two: 2};
+console.log(bobo, two);   // 1 2
+```
+
+---
+
+# Destructuring and `Array.entries`
+
+```JavaScript
+a = ['zero', 'one'];
+for (let [i, s] of a.entries())
+  console.log(i, s);
+```
+```JavaScript
+0 'zero'
+1 'one'
+```
+---
+
+# Default parameter values
+
+```JavaScript
+function f(i = 0, j = 1) {
+  return {i: i, j: j};
+}
+console.log(f());
+console.log(f(10));
+console.log(f(10, 11));
+```
+```JavaScript
+{ i: 0, j: 1 }
+{ i: 10, j: 1 }
+{ i: 10, j: 11 }
+```
+
+---
+
+# Named parameters (not)
+
+```JavaScript
+function f(i = 0, j = 1) {
+  return {i: i, j: j};
+}
+console.log(f(j = 11));  // doesn't work!
+```
+```JavaScript
+{ i: 11, j: 1 }
+```
+
+---
+
+# Named parameters (kind of)
+
+Destructure an object:
+
+```JavaScript
+function f({ i = 0, j = 1 }) {
+  return {i: i, j: j };
+}
+console.log(f({j: 11}));
+```
+```JavaScript
+{ i: 0, j: 11 }
+```
+
+---
+
+# Rest parameters
+
+Capture the rest of the parameters of a function:
+
+```JavaScript
+function showArgs(x, y, ...args) {
+  for (const a of args)
+    console.log(a);
+}
+showArgs(0, 1, 2, 3);
+```
+```JavaScript
+2
+3
+```
+
+---
+
+# Spread operator
+
+Spreads array elements out as function arguments:
+
+```JavaScript
+const a = [0, 1];
+const b = [2, 3];
+console.log(...a, ...b);
+```
+```JavaScript
+0 1 2 3
+```
+
+---
+
+# Template literals: string interpolation
+
+```JavaScript
+function showPoint(x, y) {
+  console.log(`(${x}, ${y})`);
+}
+showPoint(1, 2);
+```
+```JavaScript
+(1, 2)
+```
+
+---
+
+# Template literals: multi-line strings
+
+```JavaScript
+const html = `
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+    </head>
+    <body>
+    </body>
+</html>
+`;
+```
+
+---
+
+# Classes
+
+* To Atom...
+
+---
+
+# Other ES6 Features
+
+* Map, Set, WeakMap, WeakSet
+* Modules
+* Promises
+* Iterators
+* Generators
+* Proxies
+* Symbols
+* and more...
+
+---
+
+# Support
+
+* Recent versions of all major browsers support most ES6 features.
+* Transcompilers like Babel also support most ES6 features.
+
+---
+
+# Resources
+
+* Axel Rauschmayer's book [Exploring ES6](http://exploringjs.com/es6)
+
+This presentation is based on parts of this book.
+
+* [Mozilla Developer Network (MDN)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
+
+MDN includes excellent JavaScript documentation.
+
+* [Standard ECMA-262](http://www.ecma-international.org/ecma-262/6.0/)
+
+The official ECMAScript specification.
+
+---
+
+# Resources
+
+* Slides and code from this presentation:
+
+https://github.com/HaroldMills/ES6-Introduction
+
+* [Remark](https://github.com/gnab/remark)
+
+Great presentation tool!
+
+    </textarea>
+    <script src="remark-latest.min.js">
+    </script>
+    <script>
+      var slideshow = remark.create({
+        ratio: '16:9'
+      });
+    </script>
+  </body>
+</html>
